@@ -40,15 +40,33 @@ jobs:
             i18n: {
               defaultLocale: 'zh-hans',
               locales: ['zh-hans', 'en'],
-              fallback: {
-                en: 'zh-hans'
-              },
               routing: {
                 prefixDefaultLocale: true,
                 strategy: 'prefix'
               }
             }
           });
+          EOF
+
+          mkdir -p src/pages/zh-hans
+          mkdir -p src/layouts
+
+          if [ ! -f "src/layouts/Layout.astro" ]; then
+            cat <<EOF > src/layouts/Layout.astro
+          ---
+          const { title } = Astro.props;
+          ---
+          <html lang="zh-hans">
+            <head><title>{title}</title></head>
+            <body class="bg-black text-white"><slot /></body>
+          </html>
+          EOF
+          fi
+
+          cat <<EOF > src/pages/index.astro
+          ---
+          ---
+          <meta http-equiv="refresh" content="0;url=/zh-hans/" />
           EOF
 
           touch .nojekyll
