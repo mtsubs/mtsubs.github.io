@@ -42,6 +42,7 @@ jobs:
               locales: ['zh-hans', 'en'],
               routing: {
                 prefixDefaultLocale: true,
+                strategy: 'prefix',
                 fallbackType: 'none'
               }
             }
