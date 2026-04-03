@@ -30,13 +30,28 @@ jobs:
           }
           EOF
 
+          cat <<EOF > tailwind.config.mjs
+          /** @type {import('tailwindcss').Config} */
+          export default {
+            content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+            theme: {
+              extend: {},
+            },
+            plugins: [],
+          }
+          EOF
+
           cat <<EOF > astro.config.mjs
           import { defineConfig } from 'astro/config';
           import tailwind from '@astrojs/tailwind';
           export default defineConfig({
             output: 'static',
             outDir: 'dist',
-            integrations: [tailwind()],
+            base: './',
+            integrations: [tailwind({
+              applyBaseStyles: true,
+              nesting: true
+            })],
             i18n: {
               defaultLocale: 'zh-hans',
               locales: ['zh-hans', 'en'],
@@ -51,22 +66,27 @@ jobs:
           mkdir -p src/pages/zh-hans
           mkdir -p src/layouts
 
-          if [ ! -f "src/layouts/Layout.astro" ]; then
-            cat <<EOF > src/layouts/Layout.astro
+          cat <<EOF > src/layouts/Layout.astro
           ---
           const { title } = Astro.props;
           ---
+          <!DOCTYPE html>
           <html lang="zh-hans">
-            <head><title>{title}</title></head>
-            <body class="bg-black text-white"><slot /></body>
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width" />
+              <title>{title}</title>
+            </head>
+            <body class="bg-black text-white m-0">
+              <slot />
+            </body>
           </html>
           EOF
-          fi
 
           cat <<EOF > src/pages/index.astro
           ---
           ---
-          <meta http-equiv="refresh" content="0;url=/zh-hans/" />
+          <meta http-equiv="refresh" content="0;url=./zh-hans/" />
           EOF
 
           touch .nojekyll
@@ -75,9 +95,7 @@ jobs:
         run: npm install
 
       - name: Build with Astro
-        run: |
-          npx astro build
-          ls -R dist/
+        run: npx astro build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
