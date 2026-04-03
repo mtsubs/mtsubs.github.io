@@ -40,10 +40,12 @@ jobs:
             i18n: {
               defaultLocale: 'zh-hans',
               locales: ['zh-hans', 'en'],
+              fallback: {
+                en: 'zh-hans'
+              },
               routing: {
                 prefixDefaultLocale: true,
-                strategy: 'prefix',
-                fallbackType: 'none'
+                strategy: 'prefix'
               }
             }
           });
