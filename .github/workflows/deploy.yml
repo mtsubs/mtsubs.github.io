@@ -16,16 +16,38 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Environment Setup (Auto-Fix)
+      - name: Environment Setup
         run: |
-          # 1. 动态创建 package.json
-          echo '{"name":"mtsubs","type":"module","dependencies":{"@astrojs/tailwind":"^5.1.0","astro":"^4.5.0","tailwindcss":"^3.4.1"}}' > package.json
-          
-          # 2. 动态创建高度兼容的 astro.config.mjs
-          # 增加 output: "static" 和 outDir: "dist" 确保路径正确
-          echo 'import {defineConfig} from "astro/config";import tailwind from "@astrojs/tailwind";export default defineConfig({output:"static",outDir:"dist",integrations:[tailwind()],i18n:{defaultLocale:"zh-hans",locales:["zh-hans","en"],routing:{prefixDefaultLocale:true,fallbackType:"none"}}});' > astro.config.mjs
-          
-          # 3. 禁用 Jekyll
+          cat <<EOF > package.json
+          {
+            "name": "mtsubs",
+            "type": "module",
+            "dependencies": {
+              "@astrojs/tailwind": "^5.1.0",
+              "astro": "^4.5.0",
+              "tailwindcss": "^3.4.1"
+            }
+          }
+          EOF
+
+          cat <<EOF > astro.config.mjs
+          import { defineConfig } from 'astro/config';
+          import tailwind from '@astrojs/tailwind';
+          export default defineConfig({
+            output: 'static',
+            outDir: 'dist',
+            integrations: [tailwind()],
+            i18n: {
+              defaultLocale: 'zh-hans',
+              locales: ['zh-hans', 'en'],
+              routing: {
+                prefixDefaultLocale: true,
+                fallbackType: 'none'
+              }
+            }
+          });
+          EOF
+
           touch .nojekyll
 
       - name: Install dependencies
@@ -34,13 +56,11 @@ jobs:
       - name: Build with Astro
         run: |
           npx astro build
-          # 调试：确认 dist 目录是否存在
           ls -R dist/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # 确保路径与 astro.config.mjs 中的 outDir 一致
           path: ./dist
 
   deploy:
