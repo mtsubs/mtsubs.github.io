@@ -66,12 +66,13 @@
   inset: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 1;
+  /* z-index 3: above content sections (z=2), below nav (z=100) */
+  z-index: 3;
   pointer-events: none;
   overflow: hidden;
-  /* The hue cycle runs always, scroll-driven layered on top */
-  animation: beam-hue-cycle 8s ease-in-out infinite;
-  /* CSS Houdini: register custom property for animation */
+  /* NO animation here — animation on the parent creates a GPU compositing
+     group that isolates children's mix-blend-mode, breaking the effect.
+     The hue cycle is placed on .beam-line directly instead. */
 }
 
 .beam-line {
@@ -81,10 +82,10 @@
   /* Vertical center, offset upward 10% for visual weight */
   top: calc(50% - 10vh);
   transform: translateY(-50%);
-  
+
   width: 100%;
   height: var(--beam-width);
-  
+
   background: linear-gradient(
     90deg,
     transparent 0%,
@@ -95,24 +96,30 @@
     hsla(var(--beam-hue), 80%, 75%, 0.05) 90%,
     transparent 100%
   );
-  
+
   filter: blur(var(--beam-blur));
   mix-blend-mode: screen;
   will-change: height, filter;
-  transition: height 0.1s linear, filter 0.1s linear;
+
+  /* Hue cycle runs on normal time-based animation */
+  animation-name: beam-hue-cycle;
+  animation-duration: 8s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-fill-mode: normal;
 }
 
-/* Secondary glow — wider, softer, always present */
+/* Secondary glow — wider, softer halo around the main beam */
 .beam-glow {
   position: absolute;
   left: 0;
   right: 0;
   top: calc(50% - 10vh);
   transform: translateY(-50%);
-  
+
   width: 100%;
   height: calc(var(--beam-width) * 6);
-  
+
   background: linear-gradient(
     90deg,
     transparent 5%,
@@ -121,10 +128,12 @@
     hsla(var(--beam-hue), 80%, 70%, 0.02) 80%,
     transparent 95%
   );
-  
+
   filter: blur(calc(var(--beam-blur) * 4));
   mix-blend-mode: screen;
   opacity: 0.7;
+  /* Sync hue cycle with beam-line */
+  animation: beam-hue-cycle 8s ease-in-out infinite;
 }
 
 
@@ -162,13 +171,13 @@
 }
 
 .supports-scroll-driven .beam-line {
-  /* Hue cycle runs on normal time */
+  /* Add scroll-driven expansion alongside the time-based hue cycle */
   animation-name: beam-hue-cycle, beam-expand;
   animation-duration: 8s, 1ms;
   animation-timing-function: ease-in-out, linear;
   animation-iteration-count: infinite, 1;
   animation-fill-mode: normal, both;
-  /* Bind second animation to scroll */
+  /* First animation uses normal clock time, second uses scroll position */
   animation-timeline: auto, scroll(root block);
 }
 
