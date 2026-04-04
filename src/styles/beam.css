@@ -1,222 +1,92 @@
-/* =============================================
-   beam.css — Light beam animation system
-   Core visual effect for MontageSubs homepage
-   ============================================= */
+/* ============================================================
+   Beam Animation System — MontageSubs
+   ============================================================
+   The beam is a fixed horizontal stripe of light that slowly
+   expands as the user scrolls down the page.
+   ============================================================ */
 
-/* ── Beam CSS variables (control interface) ── */
-:root {
-  --beam-width:   4px;
-  --beam-blur:    2px;
-  --beam-opacity: 0.85;
-  --beam-hue:     45;
-}
-
-/* ── Light mode: reduce beam intensity ── */
-@media (prefers-color-scheme: light) {
-  :root {
-    --beam-opacity: 0.35;
-  }
-}
-
-/* ── CSS Custom Property registration (required to animate them) ── */
-@property --beam-width {
+/* Register animatable custom properties (modern browsers) */
+@property --beam-h {
   syntax: '<length>';
   inherits: true;
   initial-value: 4px;
 }
-
 @property --beam-blur {
   syntax: '<length>';
   inherits: true;
   initial-value: 2px;
 }
-
-@property --beam-opacity {
-  syntax: '<number>';
-  inherits: true;
-  initial-value: 0.85;
-}
-
 @property --beam-hue {
   syntax: '<number>';
   inherits: true;
   initial-value: 45;
 }
 
-/* ── Hue color cycling animation (8s, always on) ── */
-@keyframes beam-hue-cycle {
-  0%   { --beam-hue: 45; }
-  33%  { --beam-hue: 38; }
-  66%  { --beam-hue: 50; }
-  100% { --beam-hue: 45; }
-}
-
-/* ── Chevron bounce animation ── */
-@keyframes chevron-bounce {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(6px); }
-}
-
-/* ────────────────────────────────────────────
-   THE BEAM ELEMENT
-   Fixed, covers full page height, z below content
-   ──────────────────────────────────────────── */
-.beam-layer {
+/* ── Base beam element ─────────────────────────────────── */
+.beam {
   position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  /* z-index 3: above content sections (z=2), below nav (z=100) */
-  z-index: 3;
-  pointer-events: none;
-  overflow: hidden;
-  /* NO animation here — animation on the parent creates a GPU compositing
-     group that isolates children's mix-blend-mode, breaking the effect.
-     The hue cycle is placed on .beam-line directly instead. */
-}
-
-.beam-line {
-  position: absolute;
   left: 0;
   right: 0;
-  /* Vertical center, offset upward 10% for visual weight */
-  top: calc(50% - 10vh);
-  transform: translateY(-50%);
-
   width: 100%;
-  height: var(--beam-width);
-
+  height: var(--beam-h, 4px);
+  top: 38%;
+  transform: translateY(-50%);
   background: linear-gradient(
-    90deg,
+    to right,
     transparent 0%,
-    hsla(var(--beam-hue), 80%, 75%, 0.05) 10%,
-    hsla(var(--beam-hue), 90%, 85%, 0.5) 30%,
-    hsla(var(--beam-hue), 100%, 92%, var(--beam-opacity)) 50%,
-    hsla(var(--beam-hue), 90%, 85%, 0.5) 70%,
-    hsla(var(--beam-hue), 80%, 75%, 0.05) 90%,
+    hsl(var(--beam-hue, 45), 75%, 95%) 30%,
+    hsl(var(--beam-hue, 45), 90%, 98%) 50%,
+    hsl(var(--beam-hue, 45), 75%, 95%) 70%,
     transparent 100%
   );
-
-  filter: blur(var(--beam-blur));
+  filter: blur(var(--beam-blur, 2px));
+  opacity: var(--beam-opacity, 0.85);
+  z-index: 3;
+  pointer-events: none;
   mix-blend-mode: screen;
   will-change: height, filter;
-
-  /* Hue cycle runs on normal time-based animation */
-  animation-name: beam-hue-cycle;
-  animation-duration: 8s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-fill-mode: normal;
+  transition: height 0.1s linear, filter 0.1s linear; /* smooth JS updates */
 }
 
-/* Secondary glow — wider, softer halo around the main beam */
-.beam-glow {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(50% - 10vh);
-  transform: translateY(-50%);
-
-  width: 100%;
-  height: calc(var(--beam-width) * 6);
-
-  background: linear-gradient(
-    90deg,
-    transparent 5%,
-    hsla(var(--beam-hue), 80%, 70%, 0.02) 20%,
-    hsla(var(--beam-hue), 90%, 80%, 0.12) 50%,
-    hsla(var(--beam-hue), 80%, 70%, 0.02) 80%,
-    transparent 95%
-  );
-
-  filter: blur(calc(var(--beam-blur) * 4));
-  mix-blend-mode: screen;
-  opacity: 0.7;
-  /* Sync hue cycle with beam-line */
-  animation: beam-hue-cycle 8s ease-in-out infinite;
+/* ── Colour cycling (always on, time-based) ──────────────── */
+@keyframes beam-color-cycle {
+  0%, 100% { --beam-hue: 45; }
+  40%       { --beam-hue: 38; }
+  70%       { --beam-hue: 50; }
 }
 
+.beam {
+  animation: beam-color-cycle 8s ease-in-out infinite;
+}
 
-/* ────────────────────────────────────────────
-   SCROLL-DRIVEN ANIMATION (modern browsers)
-   Uses animation-timeline: scroll()
-   ──────────────────────────────────────────── */
+/* ── Scroll-driven expansion (Chrome 115+, Firefox 110+) ─── */
+@supports (animation-timeline: scroll()) {
+  @keyframes beam-scroll-expand {
+    0%   { height: 4px;   filter: blur(2px); }
+    25%  { height: 20px;  filter: blur(8px); }
+    55%  { height: 80px;  filter: blur(30px); }
+    80%  { height: 180px; filter: blur(60px); }
+    100% { height: 300px; filter: blur(80px); }
+  }
 
-@keyframes beam-expand {
-  0% {
-    --beam-width:   4px;
-    --beam-blur:    2px;
-    --beam-opacity: 0.85;
-  }
-  30% {
-    --beam-width:   20px;
-    --beam-blur:    8px;
-    --beam-opacity: 0.9;
-  }
-  60% {
-    --beam-width:   80px;
-    --beam-blur:    30px;
-    --beam-opacity: 0.95;
-  }
-  80% {
-    --beam-width:   180px;
-    --beam-blur:    60px;
-    --beam-opacity: 1;
-  }
-  100% {
-    --beam-width:   300px;
-    --beam-blur:    80px;
-    --beam-opacity: 0.8;
+  /* Only activate when the class is present (detected via JS) */
+  .supports-scroll-driven .beam {
+    animation-name: beam-color-cycle, beam-scroll-expand;
+    animation-duration: 8s, auto;
+    animation-timing-function: ease-in-out, linear;
+    animation-iteration-count: infinite, 1;
+    animation-fill-mode: none, both;
+    animation-timeline: auto, scroll(root block);
+    transition: none; /* no transition when scroll-driven */
   }
 }
 
-.supports-scroll-driven .beam-line {
-  /* Add scroll-driven expansion alongside the time-based hue cycle */
-  animation-name: beam-hue-cycle, beam-expand;
-  animation-duration: 8s, 1ms;
-  animation-timing-function: ease-in-out, linear;
-  animation-iteration-count: infinite, 1;
-  animation-fill-mode: normal, both;
-  /* First animation uses normal clock time, second uses scroll position */
-  animation-timeline: auto, scroll(root block);
-}
-
-/* ────────────────────────────────────────────
-   LEGACY FALLBACK (IE / very old browsers)
-   ──────────────────────────────────────────── */
-.legacy .beam-line {
+/* ── Legacy fallback (no CSS variables support) ──────────── */
+.legacy .beam {
   height: 12px;
   filter: none;
-  box-shadow: 0 0 20px 4px hsla(45, 90%, 70%, 0.6);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    hsla(45, 90%, 70%, 0.8) 50%,
-    transparent
-  );
-}
-
-/* ────────────────────────────────────────────
-   CHEVRON SCROLL INDICATOR
-   ──────────────────────────────────────────── */
-.chevron-down {
-  display: inline-block;
-  animation: chevron-bounce 2s ease-in-out infinite;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  border: none;
-  background: none;
-  padding: 0.5rem;
-  line-height: 1;
-}
-
-.chevron-down svg {
-  display: block;
-  width: 24px;
-  height: 24px;
-  stroke: currentColor;
-  stroke-width: 2;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  box-shadow: 0 0 12px 4px rgba(232, 184, 75, 0.5);
+  background: linear-gradient(to right, transparent, rgba(232, 184, 75, 0.6), transparent);
+  animation: beam-color-cycle 8s ease-in-out infinite;
+  mix-blend-mode: normal;
 }

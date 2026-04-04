@@ -1,81 +1,101 @@
 ---
-// Hero.astro
-const { t, lang } = Astro.props;
-const isChinese = lang === 'zh-hans';
+interface Props {
+  lang: string;
+}
+const { lang } = Astro.props;
+const isZh = lang === 'zh-hans';
 ---
 
-<section
-  id="hero"
-  style="
-    position: relative;
-    height: 100svh;
-    min-height: 600px;
-    background-color: var(--color-bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    z-index: 2;
-  "
-  aria-label={isChinese ? '首页主题' : 'Hero section'}
->
-  <!-- Content -->
-  <div style="
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 0 1.5rem;
-    max-width: 720px;
-    width: 100%;
-  ">
-    <h1 style="
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 500;
-      color: var(--color-text-primary);
-      line-height: 1.2;
-      max-width: 700px;
-      margin: 0 auto;
-      letter-spacing: -0.02em;
-    ">
-      {t.hero.title_line1}
-      {t.hero.title_line2 && (
-        <>
-          {isChinese ? '' : <br/>}
-          {t.hero.title_line2}
-        </>
-      )}
-      {t.hero.title_line3 && (
-        <>
-          <br/>
-          <span style="color: var(--color-text-secondary);">{t.hero.title_line3}</span>
-        </>
-      )}
+<section class="hero" id="hero">
+  <div class="hero__content">
+
+    <h1 class="hero__title">
+      {isZh
+        ? '连接字幕创作者与影视工作者，共建开放的字幕生态'
+        : <>Bridging Subtitle Creators<br/>and Filmmakers.<br/><span class="hero__title-line2">Building an Open Subtitle Ecosystem.</span></>
+      }
     </h1>
 
-    <!-- Chinese subtitle only -->
-    {isChinese && t.hero.subtitle && (
-      <p style="
-        margin-top: 1.25rem;
-        font-size: 0.8125rem;
-        color: var(--color-text-secondary);
-        letter-spacing: 0.04em;
-      ">
-        {t.hero.subtitle}
+    {isZh && (
+      <p class="hero__sub">
+        非营利 · 开源 · 社区驱动
       </p>
     )}
 
     <!-- Scroll indicator -->
-    <div style="margin-top: 3rem; display:flex; justify-content:center;">
-      <button
-        class="chevron-down"
-        onclick="document.getElementById('who-we-are')?.scrollIntoView({ behavior: 'smooth' })"
-        aria-label={t.hero.scroll_label}
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </button>
-    </div>
+    <a href="#who-we-are" class="hero__chevron" aria-label={isZh ? '向下滚动' : 'Scroll down'}>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/>
+      </svg>
+    </a>
   </div>
 </section>
+
+<style>
+  .hero {
+    position: relative;
+    height: 100svh;
+    min-height: 560px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg);
+    z-index: 2; /* above beam */
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
+    width: 100%;
+    padding: 0 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .hero__title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 500;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    max-width: 700px;
+    letter-spacing: -0.01em;
+  }
+
+  .hero__title-line2 {
+    color: var(--color-text-primary);
+  }
+
+  .hero__sub {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.06em;
+  }
+
+  /* Chevron indicator */
+  .hero__chevron {
+    position: absolute;
+    bottom: -40svh; /* near bottom of viewport */
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--color-text-secondary);
+    opacity: 0.55;
+    text-decoration: none;
+    display: flex;
+    animation: chevron-float 2s ease-in-out infinite;
+    transition: opacity 0.2s;
+  }
+  .hero__chevron:hover { opacity: 0.9; }
+
+  @keyframes chevron-float {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%       { transform: translateX(-50%) translateY(5px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__chevron { animation: none; }
+  }
+</style>

@@ -1,0 +1,276 @@
+---
+import { ui, type Lang } from '../i18n';
+
+interface Props {
+  lang: string;
+  hasTranslation?: boolean;
+  translationPath?: string;
+}
+
+const { lang, hasTranslation = false, translationPath } = Astro.props;
+const l = lang as Lang;
+const t = (key: keyof typeof ui['zh-hans']) =>
+  ((ui[l] as typeof ui['zh-hans'])[key] ?? ui['zh-hans'][key]) as string;
+
+const navItems: { key: keyof typeof ui['zh-hans']; href: string }[] = [
+  { key: 'nav.about',      href: `/${lang}/about` },
+  { key: 'nav.projects',   href: `/${lang}/projects` },
+  { key: 'nav.tools',      href: `/${lang}/tools` },
+  { key: 'nav.learn',      href: `/${lang}/learn` },
+  { key: 'nav.community',  href: `/${lang}/community` },
+  { key: 'nav.contribute', href: `/${lang}/contribute` },
+];
+
+const currentPath = Astro.url.pathname;
+const alternateLang = lang === 'zh-hans' ? 'en' : 'zh-hans';
+const alternateLabel = lang === 'zh-hans' ? 'EN' : '中文';
+const alternatePath = translationPath ?? currentPath.replace(`/${lang}/`, `/${alternateLang}/`);
+---
+
+<header id="site-nav" class="site-nav" data-pagefind-ignore>
+  <nav class="nav-inner" aria-label="Main navigation">
+
+    <!-- Logo -->
+    <a href={`/${lang}/`} class="nav-logo" aria-label="MontageSubs 首页">
+      <div class="nav-logo__mark" aria-hidden="true">M</div>
+      <span class="nav-logo__text">
+        {lang === 'zh-hans' ? '蒙太奇字幕社区' : 'MontageSubs'}
+      </span>
+    </a>
+
+    <!-- Desktop links -->
+    <div class="nav-links" role="list">
+      {navItems.map(({ key, href }) => {
+        const active = currentPath.startsWith(href);
+        return (
+          <a
+            href={href}
+            class={`nav-link ${active ? 'nav-link--active' : ''}`}
+            aria-current={active ? 'page' : undefined}
+            role="listitem"
+          >
+            {t(key)}
+          </a>
+        );
+      })}
+    </div>
+
+    <!-- Right actions -->
+    <div class="nav-actions">
+      <!-- Search -->
+      <button
+        data-search-trigger
+        class="nav-icon-btn"
+        aria-label={t('nav.search')}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/>
+        </svg>
+      </button>
+
+      <!-- Language switch (single label, no dropdown) -->
+      {(hasTranslation || true) && (
+        <a
+          href={alternatePath}
+          class="nav-lang-btn"
+          aria-label={`Switch to ${alternateLabel}`}
+        >
+          {alternateLabel}
+        </a>
+      )}
+
+      <!-- Mobile hamburger -->
+      <button
+        id="mobile-menu-btn"
+        class="nav-icon-btn nav-hamburger"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="mobile-menu hidden" role="navigation" aria-label="Mobile navigation">
+    <div class="mobile-menu__inner">
+      {navItems.map(({ key, href }) => {
+        const active = currentPath.startsWith(href);
+        return (
+          <a href={href} class={`mobile-link ${active ? 'mobile-link--active' : ''}`}>
+            {t(key)}
+          </a>
+        );
+      })}
+      <div class="mobile-menu__divider"></div>
+      <a href={alternatePath} class="mobile-link">{alternateLabel}</a>
+    </div>
+  </div>
+</header>
+
+<!-- Spacer so content doesn't hide under fixed nav -->
+<div class="h-16"></div>
+
+<style>
+  .site-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  .site-nav.scrolled {
+    background: var(--color-bg);
+    border-bottom-color: var(--color-border);
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  /* Logo */
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .nav-logo__mark {
+    width: 2.125rem;
+    height: 2.125rem;
+    border: 1px solid rgba(232, 184, 75, 0.35);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: var(--color-accent);
+    background: var(--color-bg);
+    transition: border-color 0.15s;
+    line-height: 1;
+  }
+  .nav-logo:hover .nav-logo__mark { border-color: rgba(232, 184, 75, 0.7); }
+  .nav-logo__text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    display: none;
+  }
+  @media (min-width: 640px) { .nav-logo__text { display: block; } }
+
+  /* Desktop nav links */
+  .nav-links {
+    display: none;
+    align-items: center;
+    gap: 0.125rem;
+    flex: 1;
+    margin-left: 0.5rem;
+  }
+  @media (min-width: 1024px) { .nav-links { display: flex; } }
+  .nav-link {
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.15s, background 0.15s;
+    white-space: nowrap;
+  }
+  .nav-link:hover { color: var(--color-text-primary); background: rgba(245,245,245,0.05); }
+  .nav-link--active { color: var(--color-accent); background: rgba(232,184,75,0.06); }
+
+  /* Actions */
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: auto;
+  }
+  .nav-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 6px;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s, background 0.15s;
+    line-height: 1;
+  }
+  .nav-icon-btn:hover { color: var(--color-text-primary); background: rgba(245,245,245,0.05); }
+
+  .nav-lang-btn {
+    padding: 0.375rem 0.625rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    transition: color 0.15s, border-color 0.15s;
+    line-height: 1;
+  }
+  .nav-lang-btn:hover { color: var(--color-text-primary); border-color: rgba(232,184,75,0.4); }
+
+  /* Hamburger only on mobile */
+  .nav-hamburger { display: flex; }
+  @media (min-width: 1024px) { .nav-hamburger { display: none; } }
+
+  /* Mobile menu */
+  .mobile-menu {
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+  }
+  .mobile-menu.hidden { display: none; }
+  .mobile-menu__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+  .mobile-link {
+    padding: 0.625rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.15s, background 0.15s;
+  }
+  .mobile-link:hover { color: var(--color-text-primary); background: rgba(245,245,245,0.05); }
+  .mobile-link--active { color: var(--color-accent); }
+  .mobile-menu__divider {
+    height: 1px;
+    background: var(--color-border);
+    margin: 0.5rem 0.75rem;
+  }
+</style>
+
+<script is:inline>
+  /* Scroll-to-solid behaviour */
+  var nav = document.getElementById('site-nav');
+  if (nav) {
+    function onScroll() {
+      if (window.scrollY > 80) { nav.classList.add('scrolled'); }
+      else { nav.classList.remove('scrolled'); }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+</script>
