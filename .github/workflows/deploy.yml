@@ -2,107 +2,51 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+  workflow_dispatch:
 
+# 设置 GITHUB_TOKEN 权限以允许部署到 GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# 只允许一个并发部署，跳过排队中的运行
+# 但不取消正在进行的运行，以免中断生产部署
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Environment Setup
-        run: |
-          cat <<EOF > package.json
-          {
-            "name": "mtsubs",
-            "type": "module",
-            "dependencies": {
-              "@astrojs/tailwind": "^5.1.0",
-              "astro": "^4.5.0",
-              "tailwindcss": "^3.4.1"
-            }
-          }
-          EOF
-
-          cat <<EOF > tailwind.config.mjs
-          /** @type {import('tailwindcss').Config} */
-          export default {
-            content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
-            theme: {
-              extend: {},
-            },
-            plugins: [],
-          }
-          EOF
-
-          cat <<EOF > astro.config.mjs
-          import { defineConfig } from 'astro/config';
-          import tailwind from '@astrojs/tailwind';
-          export default defineConfig({
-            output: 'static',
-            outDir: 'dist',
-            base: './',
-            integrations: [tailwind({
-              applyBaseStyles: true,
-              nesting: true
-            })],
-            i18n: {
-              defaultLocale: 'zh-hans',
-              locales: ['zh-hans', 'en'],
-              routing: {
-                prefixDefaultLocale: true,
-                strategy: 'prefix'
-              }
-            }
-          });
-          EOF
-
-          mkdir -p src/pages/zh-hans
-          mkdir -p src/layouts
-
-          cat <<EOF > src/layouts/Layout.astro
-          ---
-          const { title } = Astro.props;
-          ---
-          <!DOCTYPE html>
-          <html lang="zh-hans">
-            <head>
-              <meta charset="UTF-8" />
-              <meta name="viewport" content="width=device-width" />
-              <title>{title}</title>
-            </head>
-            <body class="bg-black text-white m-0">
-              <slot />
-            </body>
-          </html>
-          EOF
-
-          cat <<EOF > src/pages/index.astro
-          ---
-          ---
-          <meta http-equiv="refresh" content="0;url=./zh-hans/" />
-          EOF
-
-          touch .nojekyll
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build with Astro
-        run: npx astro build
+        run: npm run build
 
-      - name: Upload artifact
+      - name: Run Pagefind (build search index)
+        run: npx pagefind --site dist --glob "**/*.html"
+
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: dist
 
   deploy:
+    name: Deploy
     needs: build
     runs-on: ubuntu-latest
     environment:
@@ -112,3 +56,13 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+# ============================================================
+# 部署前置设置（只需做一次）：
+#
+# 1. 进入你的 GitHub 仓库 → Settings → Pages
+# 2. Source 选择 "GitHub Actions"
+# 3. 推送到 main 分支即可自动触发部署
+#
+# 注意：首次部署可能需要几分钟。
+# ============================================================
