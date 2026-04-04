@@ -19,34 +19,34 @@ const roleLabels: Record<string, string> = {
 
     <!-- Page Header -->
     <div class="max-w-3xl mb-16">
-      <p class="text-yellow-400 text-sm font-medium mb-3">社区</p>
-      <h1 class="text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight">社区</h1>
-      <p class="text-gray-400 text-lg">
+      <p class="text-accent text-sm font-medium mb-3">社区</p>
+      <h1 class="text-4xl sm:text-5xl font-bold text-primary mb-6 leading-tight">社区</h1>
+      <p class="text-secondary text-lg">
         我们是一个规模不大但充满热情的团队，来自不同背景，因对字幕事业的热爱而聚集在一起。
       </p>
     </div>
 
     <!-- Members Section -->
     <section class="mb-20">
-      <h2 class="text-2xl font-bold text-white mb-8">核心成员</h2>
+      <h2 class="text-2xl font-bold text-primary mb-8">核心成员</h2>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {members.map((member) => {
           return (
-            <div class="p-6 bg-[#111] border border-white/[0.07] rounded-2xl hover:border-white/20 transition-all duration-300">
+            <div class="p-6 bg-warm border border-wire rounded-2xl hover:border-white/20 transition-all duration-300">
               <!-- Avatar -->
-              <div class="w-14 h-14 bg-[#0a0a0a] border border-white/10 rounded-2xl flex items-center justify-center mb-4">
-                <span class="text-yellow-400 font-bold text-xl">{member.name.charAt(0).toUpperCase()}</span>
+              <div class="w-14 h-14 bg-canvas border border-wire rounded-2xl flex items-center justify-center mb-4">
+                <span class="text-accent font-bold text-xl">{member.name.charAt(0).toUpperCase()}</span>
               </div>
-              <h3 class="text-white font-semibold text-lg mb-1">{member.name}</h3>
+              <h3 class="text-primary font-semibold text-lg mb-1">{member.name}</h3>
               <!-- Roles -->
               <div class="flex flex-wrap gap-1.5 mb-4">
                 {member.role.map((r) => (
-                  <span class="text-xs px-2.5 py-0.5 bg-yellow-400/10 text-yellow-400/80 rounded-full">
+                  <span class="text-xs px-2.5 py-0.5 bg-accent/10 text-accent/80 rounded-full">
                     {roleLabels[r] ?? r}
                   </span>
                 ))}
               </div>
-              <p class="text-gray-500 text-sm leading-relaxed mb-4">{member.bio_zh}</p>
+              <p class="text-secondary text-sm leading-relaxed mb-4">{member.bio_zh}</p>
               <!-- Joined -->
               <p class="text-gray-700 text-xs mb-3">加入于 {member.joined}</p>
               <!-- Links -->
@@ -54,7 +54,7 @@ const roleLabels: Record<string, string> = {
                 {member.links.github && (
                   <a
                     href={member.links.github}
-                    class="text-gray-500 hover:text-white transition-colors text-xs flex items-center gap-1"
+                    class="text-secondary hover:text-primary transition-colors text-xs flex items-center gap-1"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -70,30 +70,30 @@ const roleLabels: Record<string, string> = {
         })}
 
         <!-- Join card -->
-        <div class="p-6 bg-[#111] border border-yellow-400/10 border-dashed rounded-2xl flex flex-col items-center justify-center text-center min-h-[200px]">
-          <div class="w-14 h-14 border border-yellow-400/20 rounded-2xl flex items-center justify-center mb-4">
-            <span class="text-yellow-400 text-2xl">+</span>
+        <div class="p-6 bg-warm border border-yellow-400/10 border-dashed rounded-2xl flex flex-col items-center justify-center text-center min-h-[200px]">
+          <div class="w-14 h-14 border border-accent/20 rounded-2xl flex items-center justify-center mb-4">
+            <span class="text-accent text-2xl">+</span>
           </div>
-          <h3 class="text-white font-medium mb-2">这里有你的位置</h3>
-          <p class="text-gray-500 text-sm mb-4">无论你是译者、开发者还是爱好者</p>
-          <a href="/zh-hans/contribute" class="text-yellow-400 text-sm hover:underline">了解如何加入 →</a>
+          <h3 class="text-primary font-medium mb-2">这里有你的位置</h3>
+          <p class="text-secondary text-sm mb-4">无论你是译者、开发者还是爱好者</p>
+          <a href="/zh-hans/contribute" class="text-accent text-sm hover:underline">了解如何加入 →</a>
         </div>
       </div>
     </section>
 
     <!-- Discussions Section -->
     <section class="mb-20">
-      <h2 class="text-2xl font-bold text-white mb-6">讨论区</h2>
-      <div class="p-8 bg-[#111] border border-white/[0.07] rounded-2xl flex flex-col sm:flex-row items-start sm:items-center gap-6">
+      <h2 class="text-2xl font-bold text-primary mb-6">讨论区</h2>
+      <div class="p-8 bg-warm border border-wire rounded-2xl flex flex-col sm:flex-row items-start sm:items-center gap-6">
         <div class="flex-1">
-          <h3 class="text-white font-semibold mb-2">GitHub Discussions</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">
+          <h3 class="text-primary font-semibold mb-2">GitHub Discussions</h3>
+          <p class="text-secondary text-sm leading-relaxed">
             我们使用 GitHub Discussions 作为主要的异步讨论空间，话题涵盖项目讨论、工具建议、翻译问题等。
           </p>
         </div>
         <a
           href="https://github.com/MontageSubs/community/discussions"
-          class="shrink-0 inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white text-sm px-5 py-2.5 rounded-full transition-colors"
+          class="shrink-0 inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-primary text-sm px-5 py-2.5 rounded-full transition-colors"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -107,9 +107,9 @@ const roleLabels: Record<string, string> = {
 
     <!-- Code of Conduct -->
     <section id="conduct" class="scroll-mt-20">
-      <h2 class="text-2xl font-bold text-white mb-6">行为准则</h2>
-      <div class="p-8 bg-[#111] border border-white/[0.07] rounded-2xl">
-        <p class="text-gray-400 leading-relaxed mb-6">
+      <h2 class="text-2xl font-bold text-primary mb-6">行为准则</h2>
+      <div class="p-8 bg-warm border border-wire rounded-2xl">
+        <p class="text-secondary leading-relaxed mb-6">
           我们致力于为所有参与者提供一个友好、安全、包容的环境。以下行为准则适用于所有社区场所。
         </p>
         <div class="grid sm:grid-cols-2 gap-4">
@@ -122,14 +122,14 @@ const roleLabels: Record<string, string> = {
             <div class="flex gap-3">
               <span class={`text-sm font-bold mt-0.5 ${icon === '✓' ? 'text-green-400' : 'text-red-400'}`}>{icon}</span>
               <div>
-                <p class="text-white text-sm font-medium mb-1">{title}</p>
-                <p class="text-gray-500 text-xs leading-relaxed">{desc}</p>
+                <p class="text-primary text-sm font-medium mb-1">{title}</p>
+                <p class="text-secondary text-xs leading-relaxed">{desc}</p>
               </div>
             </div>
           ))}
         </div>
         <p class="text-gray-600 text-xs mt-6">
-          如遇违规行为，请发送邮件至 <a href="mailto:conduct@montagesubs.org" class="text-yellow-400 hover:underline">conduct@montagesubs.org</a>
+          如遇违规行为，请发送邮件至 <a href="mailto:conduct@montagesubs.org" class="text-accent hover:underline">conduct@montagesubs.org</a>
         </p>
       </div>
     </section>

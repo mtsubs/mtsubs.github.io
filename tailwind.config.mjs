@@ -1,61 +1,45 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx}'],
-  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        brand: {
-          yellow: '#FACC15',
-          dark: '#0a0a0a',
-          card: '#111111',
-          border: '#222222',
-          muted: '#888888',
-        },
+        // CSS variable–driven – automatically follow light/dark mode
+        canvas:      'var(--color-bg)',
+        warm:        'var(--color-bg-warm)',
+        'bg-footer': 'var(--color-bg-footer)',
+        accent:      'var(--color-accent)',
+        wire:        'var(--color-border)',
+        'wire-lit':  'var(--color-border-lit)',
+        primary:     'var(--color-text-primary)',
+        secondary:   'var(--color-text-secondary)',
       },
       fontFamily: {
-        sans: [
-          '-apple-system',
-          'BlinkMacSystemFont',
-          '"Segoe UI"',
-          '"Noto Sans SC"',
-          '"PingFang SC"',
-          '"Microsoft YaHei"',
-          'sans-serif',
-        ],
-        mono: [
-          'ui-monospace',
-          'SFMono-Regular',
-          '"SF Mono"',
-          'Menlo',
-          'Consolas',
-          'monospace',
-        ],
+        sans: ['var(--font-sans)', 'sans-serif'],
+        mono: ['var(--font-mono)', 'monospace'],
       },
-      typography: (theme) => ({
+      typography: () => ({
         DEFAULT: {
           css: {
-            color: theme('colors.gray.300'),
+            color: 'var(--color-text-secondary)',
             a: {
-              color: theme('colors.yellow.400'),
-              '&:hover': { color: theme('colors.yellow.300') },
+              color: 'var(--color-accent)',
+              '&:hover': { color: 'var(--color-accent)' },
             },
-            h1: { color: theme('colors.white') },
-            h2: { color: theme('colors.white') },
-            h3: { color: theme('colors.white') },
-            h4: { color: theme('colors.white') },
-            strong: { color: theme('colors.white') },
+            'h1,h2,h3,h4': { color: 'var(--color-text-primary)' },
+            strong: { color: 'var(--color-text-primary)' },
             code: {
-              color: theme('colors.yellow.400'),
-              backgroundColor: theme('colors.gray.900'),
+              color: 'var(--color-accent)',
+              backgroundColor: 'rgba(0,0,0,0.4)',
               padding: '0.2em 0.4em',
               borderRadius: '0.25rem',
             },
             blockquote: {
-              borderLeftColor: theme('colors.yellow.400'),
-              color: theme('colors.gray.400'),
+              borderLeftColor: 'var(--color-accent)',
+              color: 'var(--color-text-secondary)',
             },
-            hr: { borderColor: theme('colors.gray.800') },
+            hr: { borderColor: 'var(--color-border)' },
+            li: { color: 'var(--color-text-secondary)' },
           },
         },
       }),

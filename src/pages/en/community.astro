@@ -18,62 +18,62 @@ const roleLabels: Record<string, string> = {
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
 
     <div class="max-w-3xl mb-16">
-      <p class="text-yellow-400 text-sm font-medium mb-3">Community</p>
-      <h1 class="text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight">Community</h1>
-      <p class="text-gray-400 text-lg">
+      <p class="text-accent text-sm font-medium mb-3">Community</p>
+      <h1 class="text-4xl sm:text-5xl font-bold text-primary mb-6 leading-tight">Community</h1>
+      <p class="text-secondary text-lg">
         A small but passionate team from diverse backgrounds, united by a love for quality subtitles.
       </p>
     </div>
 
     <!-- Members -->
     <section class="mb-20">
-      <h2 class="text-2xl font-bold text-white mb-8">Core Members</h2>
+      <h2 class="text-2xl font-bold text-primary mb-8">Core Members</h2>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {members.map((member) => {
           return (
-            <div class="p-6 bg-[#111] border border-white/[0.07] rounded-2xl hover:border-white/20 transition-all">
-              <div class="w-14 h-14 bg-[#0a0a0a] border border-white/10 rounded-2xl flex items-center justify-center mb-4">
-                <span class="text-yellow-400 font-bold text-xl">{member.name.charAt(0).toUpperCase()}</span>
+            <div class="p-6 bg-warm border border-wire rounded-2xl hover:border-white/20 transition-all">
+              <div class="w-14 h-14 bg-canvas border border-wire rounded-2xl flex items-center justify-center mb-4">
+                <span class="text-accent font-bold text-xl">{member.name.charAt(0).toUpperCase()}</span>
               </div>
-              <h3 class="text-white font-semibold text-lg mb-1">{member.name}</h3>
+              <h3 class="text-primary font-semibold text-lg mb-1">{member.name}</h3>
               <div class="flex flex-wrap gap-1.5 mb-4">
                 {member.role.map((r) => (
-                  <span class="text-xs px-2.5 py-0.5 bg-yellow-400/10 text-yellow-400/80 rounded-full">
+                  <span class="text-xs px-2.5 py-0.5 bg-accent/10 text-accent/80 rounded-full">
                     {roleLabels[r] ?? r}
                   </span>
                 ))}
               </div>
-              <p class="text-gray-500 text-sm leading-relaxed mb-4">{member.bio_en}</p>
+              <p class="text-secondary text-sm leading-relaxed mb-4">{member.bio_en}</p>
               <p class="text-gray-700 text-xs">Since {member.joined}</p>
             </div>
           );
         })}
 
         <!-- Join card -->
-        <div class="p-6 bg-[#111] border border-yellow-400/10 border-dashed rounded-2xl flex flex-col items-center justify-center text-center min-h-[200px]">
-          <div class="w-14 h-14 border border-yellow-400/20 rounded-2xl flex items-center justify-center mb-4">
-            <span class="text-yellow-400 text-2xl">+</span>
+        <div class="p-6 bg-warm border border-yellow-400/10 border-dashed rounded-2xl flex flex-col items-center justify-center text-center min-h-[200px]">
+          <div class="w-14 h-14 border border-accent/20 rounded-2xl flex items-center justify-center mb-4">
+            <span class="text-accent text-2xl">+</span>
           </div>
-          <h3 class="text-white font-medium mb-2">There's a place for you here</h3>
-          <p class="text-gray-500 text-sm mb-4">Whether you're a translator, developer, or enthusiast</p>
-          <a href="/en/contribute" class="text-yellow-400 text-sm hover:underline">Learn how to join →</a>
+          <h3 class="text-primary font-medium mb-2">There's a place for you here</h3>
+          <p class="text-secondary text-sm mb-4">Whether you're a translator, developer, or enthusiast</p>
+          <a href="/en/contribute" class="text-accent text-sm hover:underline">Learn how to join →</a>
         </div>
       </div>
     </section>
 
     <!-- Discussions -->
     <section class="mb-20">
-      <h2 class="text-2xl font-bold text-white mb-6">Discussions</h2>
-      <div class="p-8 bg-[#111] border border-white/[0.07] rounded-2xl flex flex-col sm:flex-row items-start sm:items-center gap-6">
+      <h2 class="text-2xl font-bold text-primary mb-6">Discussions</h2>
+      <div class="p-8 bg-warm border border-wire rounded-2xl flex flex-col sm:flex-row items-start sm:items-center gap-6">
         <div class="flex-1">
-          <h3 class="text-white font-semibold mb-2">GitHub Discussions</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">
+          <h3 class="text-primary font-semibold mb-2">GitHub Discussions</h3>
+          <p class="text-secondary text-sm leading-relaxed">
             We use GitHub Discussions as our main async space, covering project discussions, tool suggestions, and translation questions.
           </p>
         </div>
         <a
           href="https://github.com/MontageSubs/community/discussions"
-          class="shrink-0 inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white text-sm px-5 py-2.5 rounded-full transition-colors"
+          class="shrink-0 inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-primary text-sm px-5 py-2.5 rounded-full transition-colors"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -87,9 +87,9 @@ const roleLabels: Record<string, string> = {
 
     <!-- Code of Conduct -->
     <section id="conduct" class="scroll-mt-20">
-      <h2 class="text-2xl font-bold text-white mb-6">Code of Conduct</h2>
-      <div class="p-8 bg-[#111] border border-white/[0.07] rounded-2xl">
-        <p class="text-gray-400 leading-relaxed mb-6">
+      <h2 class="text-2xl font-bold text-primary mb-6">Code of Conduct</h2>
+      <div class="p-8 bg-warm border border-wire rounded-2xl">
+        <p class="text-secondary leading-relaxed mb-6">
           We are committed to providing a welcoming, safe, and inclusive environment for all participants. This code applies to all community spaces.
         </p>
         <div class="grid sm:grid-cols-2 gap-4">
@@ -102,14 +102,14 @@ const roleLabels: Record<string, string> = {
             <div class="flex gap-3">
               <span class={`text-sm font-bold mt-0.5 ${icon === '✓' ? 'text-green-400' : 'text-red-400'}`}>{icon}</span>
               <div>
-                <p class="text-white text-sm font-medium mb-1">{title}</p>
-                <p class="text-gray-500 text-xs leading-relaxed">{desc}</p>
+                <p class="text-primary text-sm font-medium mb-1">{title}</p>
+                <p class="text-secondary text-xs leading-relaxed">{desc}</p>
               </div>
             </div>
           ))}
         </div>
         <p class="text-gray-600 text-xs mt-6">
-          Report violations to <a href="mailto:conduct@montagesubs.org" class="text-yellow-400 hover:underline">conduct@montagesubs.org</a>
+          Report violations to <a href="mailto:conduct@montagesubs.org" class="text-accent hover:underline">conduct@montagesubs.org</a>
         </p>
       </div>
     </section>

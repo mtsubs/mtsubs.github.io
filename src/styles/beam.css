@@ -1,0 +1,92 @@
+/* ============================================================
+   Beam Animation System — MontageSubs
+   ============================================================
+   The beam is a fixed horizontal stripe of light that slowly
+   expands as the user scrolls down the page.
+   ============================================================ */
+
+/* Register animatable custom properties (modern browsers) */
+@property --beam-h {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 4px;
+}
+@property --beam-blur {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 2px;
+}
+@property --beam-hue {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 45;
+}
+
+/* ── Base beam element ─────────────────────────────────── */
+.beam {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: var(--beam-h, 4px);
+  top: 38%;
+  transform: translateY(-50%);
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    hsl(var(--beam-hue, 45), 75%, 95%) 30%,
+    hsl(var(--beam-hue, 45), 90%, 98%) 50%,
+    hsl(var(--beam-hue, 45), 75%, 95%) 70%,
+    transparent 100%
+  );
+  filter: blur(var(--beam-blur, 2px));
+  opacity: var(--beam-opacity, 0.85);
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  will-change: height, filter;
+  transition: height 0.1s linear, filter 0.1s linear; /* smooth JS updates */
+}
+
+/* ── Colour cycling (always on, time-based) ──────────────── */
+@keyframes beam-color-cycle {
+  0%, 100% { --beam-hue: 45; }
+  40%       { --beam-hue: 38; }
+  70%       { --beam-hue: 50; }
+}
+
+.beam {
+  animation: beam-color-cycle 8s ease-in-out infinite;
+}
+
+/* ── Scroll-driven expansion (Chrome 115+, Firefox 110+) ─── */
+@supports (animation-timeline: scroll()) {
+  @keyframes beam-scroll-expand {
+    0%   { height: 4px;   filter: blur(2px); }
+    25%  { height: 20px;  filter: blur(8px); }
+    55%  { height: 80px;  filter: blur(30px); }
+    80%  { height: 180px; filter: blur(60px); }
+    100% { height: 300px; filter: blur(80px); }
+  }
+
+  /* Only activate when the class is present (detected via JS) */
+  .supports-scroll-driven .beam {
+    animation-name: beam-color-cycle, beam-scroll-expand;
+    animation-duration: 8s, auto;
+    animation-timing-function: ease-in-out, linear;
+    animation-iteration-count: infinite, 1;
+    animation-fill-mode: none, both;
+    animation-timeline: auto, scroll(root block);
+    transition: none; /* no transition when scroll-driven */
+  }
+}
+
+/* ── Legacy fallback (no CSS variables support) ──────────── */
+.legacy .beam {
+  height: 12px;
+  filter: none;
+  box-shadow: 0 0 12px 4px rgba(232, 184, 75, 0.5);
+  background: linear-gradient(to right, transparent, rgba(232, 184, 75, 0.6), transparent);
+  animation: beam-color-cycle 8s ease-in-out infinite;
+  mix-blend-mode: normal;
+}

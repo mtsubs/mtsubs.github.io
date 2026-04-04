@@ -1,0 +1,142 @@
+---
+interface Props {
+  lang: string;
+}
+const { lang } = Astro.props;
+const isZh = lang === 'zh-hans';
+
+const portals = isZh
+  ? [
+      { label: '关于我们', href: `/${lang}/about`,      desc: '了解社区的起源与使命' },
+      { label: '项目',     href: `/${lang}/projects`,   desc: '正在进行中的作品与协作' },
+      { label: '工具',     href: `/${lang}/tools`,      desc: '开源字幕工具一览' },
+      { label: '学习',     href: `/${lang}/learn`,      desc: '翻译指南与技术文档' },
+      { label: '社区',     href: `/${lang}/community`,  desc: '加入讨论，找到同伴' },
+      { label: '参与贡献', href: `/${lang}/contribute`, desc: '如何为社区做出贡献' },
+    ]
+  : [
+      { label: 'About',      href: `/${lang}/about`,      desc: 'Our origin and mission' },
+      { label: 'Projects',   href: `/${lang}/projects`,   desc: 'Ongoing works and collaborations' },
+      { label: 'Tools',      href: `/${lang}/tools`,      desc: 'Open-source subtitle tools' },
+      { label: 'Learn',      href: `/${lang}/learn`,      desc: 'Translation guides and technical docs' },
+      { label: 'Community',  href: `/${lang}/community`,  desc: 'Join discussions, find your crew' },
+      { label: 'Contribute', href: `/${lang}/contribute`, desc: 'How to contribute to the community' },
+    ];
+---
+
+<section class="portals" id="portals">
+  <div class="portals__inner">
+
+    <p class="section-label">
+      {isZh ? '入口' : 'Navigate'}
+    </p>
+
+    <h2 class="portals__heading">
+      {isZh ? '探索社区' : 'Explore the Community'}
+    </h2>
+
+    <ul class="portals__grid" role="list">
+      {portals.map(({ label, href, desc }) => (
+        <li>
+          <a href={href} class="portal-card" tabindex="0">
+            <span class="portal-card__label">{label}</span>
+            <span class="portal-card__arrow" aria-hidden="true">→</span>
+            <span class="portal-card__desc">{desc}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .portals {
+    position: relative;
+    z-index: 2;
+    background: var(--color-bg);
+    min-height: 80vh;
+    padding: 8rem 0 6rem;
+  }
+
+  .portals__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .portals__heading {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 3rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* 3×2 grid */
+  .portals__grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 640px)  { .portals__grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .portals__grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .portal-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 0 0.5rem;
+    padding: 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-bg-warm);
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    cursor: pointer;
+  }
+
+  .portal-card:hover,
+  .portal-card:focus-visible {
+    transform: translateY(-3px);
+    border-color: var(--color-border-lit);
+    background: var(--color-bg-warm);
+    outline: none;
+  }
+
+  .portal-card__label {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    grid-column: 1;
+    grid-row: 1;
+    transition: color 0.18s;
+  }
+  .portal-card:hover .portal-card__label { color: var(--color-accent); }
+
+  .portal-card__arrow {
+    font-size: 1.25rem;
+    color: var(--color-text-secondary);
+    grid-column: 2;
+    grid-row: 1;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.18s, transform 0.18s, color 0.18s;
+  }
+  .portal-card:hover .portal-card__arrow,
+  .portal-card:focus-visible .portal-card__arrow {
+    opacity: 1;
+    transform: translateX(0);
+    color: var(--color-accent);
+  }
+
+  .portal-card__desc {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin-top: 0.5rem;
+  }
+</style>

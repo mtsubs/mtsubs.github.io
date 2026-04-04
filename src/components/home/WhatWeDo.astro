@@ -1,0 +1,119 @@
+---
+interface Props {
+  lang: string;
+}
+const { lang } = Astro.props;
+const isZh = lang === 'zh-hans';
+
+const pillars = isZh
+  ? [
+      {
+        title: '工具',
+        body:  '开发开源工具，降低字幕创作的技术门槛',
+      },
+      {
+        title: '知识',
+        body:  '沉淀翻译笔记、技术指南与实践经验，让每一次创作都留下可传承的痕迹',
+      },
+      {
+        title: '合作',
+        body:  '连接影视工作者与字幕创作者，建立正式的协作渠道，让双方的专业相互成就',
+      },
+      {
+        title: '品质',
+        body:  '为观众提供经过认真对待的高质量字幕内容',
+      },
+    ]
+  : [
+      {
+        title: 'Tools',
+        body:  'We build open-source tools to lower the technical barrier for subtitle creation.',
+      },
+      {
+        title: 'Knowledge',
+        body:  'We document translation notes, technical guides, and best practices — leaving a legacy for those who follow.',
+      },
+      {
+        title: 'Collaboration',
+        body:  'We build formal channels between filmmakers and subtitle creators, so both sides can grow together.',
+      },
+      {
+        title: 'Quality',
+        body:  'We deliver carefully crafted subtitles that audiences can rely on.',
+      },
+    ];
+---
+
+<section class="wwd" id="what-we-do">
+  <div class="wwd__inner">
+
+    <p class="section-label">
+      {isZh ? '我们做什么' : 'What We Do'}
+    </p>
+
+    <h2 class="wwd__heading">
+      {isZh ? '四个支柱' : 'Four Pillars'}
+    </h2>
+
+    <ul class="wwd__grid" role="list">
+      {pillars.map(({ title, body }) => (
+        <li class="wwd__card">
+          <h3 class="wwd__card-title">{title}</h3>
+          <p class="wwd__card-body">{body}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .wwd {
+    position: relative;
+    z-index: 2;
+    background: var(--color-bg-warm);
+    min-height: 100vh;
+    padding: 8rem 0 6rem;
+  }
+
+  .wwd__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .wwd__heading {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 4rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* Pillar cards – clean left-border design */
+  .wwd__grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  @media (min-width: 640px)  { .wwd__grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .wwd__grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .wwd__card {
+    padding-left: 1.25rem;
+    border-left: 2px solid var(--color-accent);
+  }
+
+  .wwd__card-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 0.75rem;
+  }
+
+  .wwd__card-body {
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+</style>
