@@ -1,0 +1,174 @@
+---
+// Nav.astro
+const { t, lang } = Astro.props;
+---
+
+<nav class="nav-root" id="nav" aria-label="Main navigation">
+  <div class="nav-inner">
+    <!-- Logo -->
+    <a href={`/${lang}/`} class="nav-logo" aria-label="MontageSubs Home">
+      <span class="nav-logo-mark" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Film strip / subtitle mark -->
+          <rect x="2" y="6" width="24" height="16" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <line x1="2" y1="11" x2="26" y2="11" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="2" y1="17" x2="26" y2="17" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="7" y1="6" x2="7" y2="11" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="21" y1="6" x2="21" y2="11" stroke="currentColor" stroke-width="1.5"/>
+          <!-- Accent beam line through middle -->
+          <line x1="8" y1="14" x2="20" y2="14" stroke="var(--color-accent)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span>MontageSubs</span>
+    </a>
+
+    <!-- Desktop nav links -->
+    <ul class="nav-links" role="list">
+      <li><a href={`/${lang}/about/`}>{t.nav.about}</a></li>
+      <li><a href={`/${lang}/projects/`}>{t.nav.projects}</a></li>
+      <li><a href={`/${lang}/tools/`}>{t.nav.tools}</a></li>
+      <li><a href={`/${lang}/learn/`}>{t.nav.learn}</a></li>
+      <li><a href={`/${lang}/community/`}>{t.nav.community}</a></li>
+      <li><a href={`/${lang}/contribute/`}>{t.nav.contribute}</a></li>
+    </ul>
+
+    <!-- Actions -->
+    <div class="nav-actions">
+      <!-- Search -->
+      <button
+        class="nav-btn"
+        id="search-btn"
+        aria-label={t.nav.search_label}
+        aria-expanded="false"
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <circle cx="6.5" cy="6.5" r="4.5"/>
+          <line x1="10.5" y1="10.5" x2="14" y2="14"/>
+        </svg>
+      </button>
+
+      <!-- Language switch -->
+      <a
+        href={t.nav.lang_switch_href}
+        class="nav-btn"
+        aria-label={`Switch to ${t.nav.lang_switch}`}
+      >
+        {t.nav.lang_switch}
+      </a>
+
+      <!-- Hamburger (mobile) -->
+      <button
+        class="nav-hamburger"
+        id="nav-hamburger"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="nav-drawer"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="nav-drawer" id="nav-drawer" role="dialog" aria-label="Navigation menu" aria-modal="true">
+  <ul class="nav-drawer-links" role="list">
+    <li><a href={`/${lang}/about/`}>{t.nav.about}</a></li>
+    <li><a href={`/${lang}/projects/`}>{t.nav.projects}</a></li>
+    <li><a href={`/${lang}/tools/`}>{t.nav.tools}</a></li>
+    <li><a href={`/${lang}/learn/`}>{t.nav.learn}</a></li>
+    <li><a href={`/${lang}/community/`}>{t.nav.community}</a></li>
+    <li><a href={`/${lang}/contribute/`}>{t.nav.contribute}</a></li>
+    <li><a href={t.nav.lang_switch_href} style="color: var(--color-accent)">{t.nav.lang_switch}</a></li>
+  </ul>
+</div>
+
+<!-- Search overlay (placeholder) -->
+<div
+  id="search-overlay"
+  role="dialog"
+  aria-label="Search"
+  aria-modal="true"
+  style="display:none; position:fixed; inset:0; background:rgba(8,8,8,0.96); z-index:200; padding:5rem 2rem 2rem; flex-direction:column; align-items:center;"
+>
+  <div style="width:100%; max-width:640px;">
+    <div style="display:flex; align-items:center; gap:1rem; margin-bottom:2rem;">
+      <input
+        type="search"
+        placeholder={lang === 'zh-hans' ? '搜索…' : 'Search…'}
+        style="flex:1; background:var(--color-bg-warm); border:1px solid var(--color-border); color:var(--color-text-primary); padding:0.75rem 1rem; border-radius:6px; font-size:1rem; outline:none; font-family:var(--font-sans);"
+        id="search-input"
+        aria-label={t.nav.search_label}
+      />
+      <button
+        id="search-close"
+        aria-label="Close search"
+        style="background:none; border:none; color:var(--color-text-secondary); cursor:pointer; font-size:1.5rem; padding:0.5rem; line-height:1;"
+      >✕</button>
+    </div>
+    <p style="color:var(--color-text-secondary); font-size:0.875rem; text-align:center;">
+      {lang === 'zh-hans' ? '按 Escape 关闭' : 'Press Escape to close'}
+    </p>
+  </div>
+</div>
+
+<script>
+  // ── Nav scroll behavior ──
+  const nav = document.getElementById('nav');
+  const SCROLL_THRESHOLD = 80;
+
+  function updateNav() {
+    if (window.scrollY > SCROLL_THRESHOLD) {
+      nav?.classList.add('scrolled');
+    } else {
+      nav?.classList.remove('scrolled');
+    }
+  }
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+
+  // ── Hamburger / drawer ──
+  const hamburger = document.getElementById('nav-hamburger');
+  const drawer = document.getElementById('nav-drawer');
+
+  hamburger?.addEventListener('click', () => {
+    const isOpen = drawer?.classList.contains('open');
+    drawer?.classList.toggle('open', !isOpen);
+    hamburger.setAttribute('aria-expanded', String(!isOpen));
+  });
+
+  // Close drawer on outside click
+  document.addEventListener('click', (e) => {
+    if (!drawer?.contains(e.target as Node) && !hamburger?.contains(e.target as Node)) {
+      drawer?.classList.remove('open');
+      hamburger?.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // ── Search overlay ──
+  const searchBtn = document.getElementById('search-btn');
+  const searchOverlay = document.getElementById('search-overlay');
+  const searchClose = document.getElementById('search-close');
+  const searchInput = document.getElementById('search-input');
+
+  function openSearch() {
+    if (!searchOverlay) return;
+    searchOverlay.style.display = 'flex';
+    searchBtn?.setAttribute('aria-expanded', 'true');
+    searchInput?.focus();
+  }
+
+  function closeSearch() {
+    if (!searchOverlay) return;
+    searchOverlay.style.display = 'none';
+    searchBtn?.setAttribute('aria-expanded', 'false');
+  }
+
+  searchBtn?.addEventListener('click', openSearch);
+  searchClose?.addEventListener('click', closeSearch);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSearch();
+  });
+</script>

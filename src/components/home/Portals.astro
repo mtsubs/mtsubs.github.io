@@ -1,47 +1,125 @@
 ---
-interface Props {
-  lang: string;
-}
-const { lang } = Astro.props;
-const isZh = lang === 'zh-hans';
+// Portals.astro
+const { t } = Astro.props;
 
-const portals = isZh
-  ? [
-      { label: '关于我们', href: `/${lang}/about`,      desc: '了解社区的起源与使命' },
-      { label: '项目',     href: `/${lang}/projects`,   desc: '正在进行中的作品与协作' },
-      { label: '工具',     href: `/${lang}/tools`,      desc: '开源字幕工具一览' },
-      { label: '学习',     href: `/${lang}/learn`,      desc: '翻译指南与技术文档' },
-      { label: '社区',     href: `/${lang}/community`,  desc: '加入讨论，找到同伴' },
-      { label: '参与贡献', href: `/${lang}/contribute`, desc: '如何为社区做出贡献' },
-    ]
-  : [
-      { label: 'About',      href: `/${lang}/about`,      desc: 'Our origin and mission' },
-      { label: 'Projects',   href: `/${lang}/projects`,   desc: 'Ongoing works and collaborations' },
-      { label: 'Tools',      href: `/${lang}/tools`,      desc: 'Open-source subtitle tools' },
-      { label: 'Learn',      href: `/${lang}/learn`,      desc: 'Translation guides and technical docs' },
-      { label: 'Community',  href: `/${lang}/community`,  desc: 'Join discussions, find your crew' },
-      { label: 'Contribute', href: `/${lang}/contribute`, desc: 'How to contribute to the community' },
-    ];
+// Simple SVG icons for each portal
+const icons: Record<string, string> = {
+  0: `<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>`,
+  1: `<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>`,
+  2: `<rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>`,
+  3: `<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>`,
+  4: `<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>`,
+  5: `<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>`,
+};
 ---
 
-<section class="portals" id="portals">
-  <div class="portals__inner">
+<section
+  id="portals"
+  style="
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(to bottom, var(--color-bg-warm), var(--color-bg-footer));
+    min-height: 80vh;
+    padding: 8rem 1.5rem 6rem;
+    display: flex;
+    align-items: center;
+  "
+  aria-labelledby="portals-title"
+>
+  <div style="max-width: 1100px; margin: 0 auto; width: 100%;">
 
-    <p class="section-label">
-      {isZh ? '入口' : 'Navigate'}
+    <p style="
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      color: var(--color-text-secondary);
+      margin-bottom: 1rem;
+    " aria-hidden="true">
+      {t.portals.section_label}
     </p>
 
-    <h2 class="portals__heading">
-      {isZh ? '探索社区' : 'Explore the Community'}
+    <h2
+      id="portals-title"
+      style="
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        font-weight: 500;
+        color: var(--color-text-primary);
+        letter-spacing: -0.02em;
+        margin-bottom: 3rem;
+        line-height: 1.15;
+      "
+    >
+      {t.portals.title}
     </h2>
 
-    <ul class="portals__grid" role="list">
-      {portals.map(({ label, href, desc }) => (
+    <!-- Portal cards grid -->
+    <ul
+      style="
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+      "
+      role="list"
+      class="portals-grid"
+    >
+      {t.portals.cards.map((card: { title: string; desc: string; href: string }, i: number) => (
         <li>
-          <a href={href} class="portal-card" tabindex="0">
-            <span class="portal-card__label">{label}</span>
-            <span class="portal-card__arrow" aria-hidden="true">→</span>
-            <span class="portal-card__desc">{desc}</span>
+          <a
+            href={card.href}
+            class="portal-card"
+            style="
+              display: block;
+              border: 1px solid var(--color-border);
+              border-radius: 10px;
+              padding: 1.75rem;
+              text-decoration: none;
+              position: relative;
+              background: rgba(255,255,255,0.012);
+              transition: border-color 0.15s ease, transform 0.15s ease;
+              height: 100%;
+            "
+          >
+            <!-- Icon -->
+            <div style="
+              width: 32px;
+              height: 32px;
+              color: var(--color-accent);
+              margin-bottom: 1rem;
+              opacity: 0.8;
+            " aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="32" height="32">
+                <Fragment set:html={icons[String(i)]} />
+              </svg>
+            </div>
+
+            <!-- Title -->
+            <div style="
+              font-size: 1.0625rem;
+              font-weight: 500;
+              color: var(--color-text-primary);
+              margin-bottom: 0.4rem;
+            ">
+              {card.title}
+            </div>
+
+            <!-- Description -->
+            <p style="
+              font-size: 0.8125rem;
+              color: var(--color-text-secondary);
+              line-height: 1.55;
+            ">
+              {card.desc}
+            </p>
+
+            <!-- Arrow -->
+            <div style="
+              position: absolute;
+              bottom: 1.25rem;
+              right: 1.25rem;
+              color: var(--color-text-secondary);
+              font-size: 0.875rem;
+              transition: color 0.15s ease;
+            " aria-hidden="true">→</div>
           </a>
         </li>
       ))}
@@ -50,93 +128,24 @@ const portals = isZh
 </section>
 
 <style>
-  .portals {
-    position: relative;
-    z-index: 2;
-    background: var(--color-bg);
-    min-height: 80vh;
-    padding: 8rem 0 6rem;
+  .portals-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 
-  .portals__inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
+  @media (max-width: 900px) {
+    .portals-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
   }
 
-  .portals__heading {
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    font-weight: 500;
-    color: var(--color-text-primary);
-    margin-bottom: 3rem;
-    letter-spacing: -0.01em;
+  @media (max-width: 540px) {
+    .portals-grid {
+      grid-template-columns: 1fr !important;
+    }
   }
 
-  /* 3×2 grid */
-  .portals__grid {
-    list-style: none;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  @media (min-width: 640px)  { .portals__grid { grid-template-columns: 1fr 1fr; } }
-  @media (min-width: 1024px) { .portals__grid { grid-template-columns: repeat(3, 1fr); } }
-
-  .portal-card {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto;
-    align-items: center;
-    gap: 0 0.5rem;
-    padding: 1.5rem;
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    background: var(--color-bg-warm);
-    text-decoration: none;
-    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
-    cursor: pointer;
-  }
-
-  .portal-card:hover,
-  .portal-card:focus-visible {
-    transform: translateY(-3px);
-    border-color: var(--color-border-lit);
-    background: var(--color-bg-warm);
-    outline: none;
-  }
-
-  .portal-card__label {
-    font-size: 1.125rem;
-    font-weight: 500;
-    color: var(--color-text-primary);
-    grid-column: 1;
-    grid-row: 1;
-    transition: color 0.18s;
-  }
-  .portal-card:hover .portal-card__label { color: var(--color-accent); }
-
-  .portal-card__arrow {
-    font-size: 1.25rem;
-    color: var(--color-text-secondary);
-    grid-column: 2;
-    grid-row: 1;
-    opacity: 0;
-    transform: translateX(-4px);
-    transition: opacity 0.18s, transform 0.18s, color 0.18s;
-  }
-  .portal-card:hover .portal-card__arrow,
-  .portal-card:focus-visible .portal-card__arrow {
-    opacity: 1;
-    transform: translateX(0);
-    color: var(--color-accent);
-  }
-
-  .portal-card__desc {
-    font-size: 0.875rem;
-    color: var(--color-text-secondary);
-    line-height: 1.5;
-    grid-column: 1 / -1;
-    grid-row: 2;
-    margin-top: 0.5rem;
+  .portal-card:hover {
+    border-color: var(--color-border-lit) !important;
+    transform: translateY(-2px);
   }
 </style>

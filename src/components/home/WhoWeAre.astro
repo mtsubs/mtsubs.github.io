@@ -1,114 +1,97 @@
 ---
-interface Props {
-  lang: string;
-}
-const { lang } = Astro.props;
-const isZh = lang === 'zh-hans';
-
-const identities = isZh
-  ? [
-      { role: '影视工作者', desc: '找到真正热爱你作品的合作伙伴' },
-      { role: '字幕创作者', desc: '让你的工作被认可、被传承' },
-      { role: '开发者',     desc: '你的工具改变参与的门槛' },
-      { role: '观众',       desc: '这里，每个人都可以成为创作者' },
-    ]
-  : [
-      { role: 'Filmmakers',         desc: 'Find collaborators who truly love your work' },
-      { role: 'Subtitle Creators',  desc: 'Get recognized for the craft you bring' },
-      { role: 'Developers',         desc: 'Your tools lower the barrier to participate' },
-      { role: 'Audiences',          desc: 'Here, every viewer can become a creator' },
-    ];
+// WhoWeAre.astro
+const { t } = Astro.props;
 ---
 
-<section class="wwa" id="who-we-are">
-  <div class="wwa__inner">
+<section
+  id="who-we-are"
+  style="
+    position: relative;
+    z-index: 2;
+    background-color: var(--color-bg-warm);
+    min-height: 100vh;
+    padding: 8rem 1.5rem;
+    display: flex;
+    align-items: center;
+  "
+  aria-labelledby="who-title"
+>
+  <div style="max-width: 1100px; margin: 0 auto; width: 100%;">
 
     <!-- Section label -->
-    <p class="section-label">
-      {isZh ? '蒙太奇字幕社区' : 'MontageSubs'}
+    <p style="
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      color: var(--color-text-secondary);
+      margin-bottom: 1rem;
+    " aria-hidden="true">
+      {t.who.section_label}
     </p>
 
-    <!-- Main heading -->
-    <h2 class="wwa__heading">
-      {isZh ? '我们是谁' : 'Who We Are'}
+    <!-- Main title -->
+    <h2
+      id="who-title"
+      style="
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        font-weight: 500;
+        color: var(--color-text-primary);
+        letter-spacing: -0.02em;
+        line-height: 1.15;
+        margin-bottom: 2rem;
+      "
+    >
+      {t.who.title}
     </h2>
 
     <!-- Body text -->
-    <p class="wwa__body">
-      {isZh
-        ? '蒙太奇字幕社区是一个开放的非营利组织。我们连接影视工作者、字幕创作者与开发者，促成专业协作，推动粉丝字幕走向被承认的路径。'
-        : 'MontageSubs is an open, nonprofit community. We bring together filmmakers, subtitle creators, and developers to foster professional collaboration and build a recognized path for fan subtitling.'
-      }
+    <p style="
+      font-size: 1.0625rem;
+      color: var(--color-text-secondary);
+      max-width: 600px;
+      line-height: 1.75;
+      margin-bottom: 4rem;
+    ">
+      {t.who.body}
     </p>
 
-    <!-- Identity cards -->
-    <ul class="wwa__grid" role="list">
-      {identities.map(({ role, desc }) => (
-        <li class="wwa__card">
-          <h3 class="wwa__card-title">{role}</h3>
-          <p class="wwa__card-desc">{desc}</p>
+    <!-- Identity cards grid -->
+    <ul
+      style="
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+      "
+      role="list"
+      aria-label={t.who.title}
+    >
+      {t.who.identities.map((item: { role: string; desc: string }) => (
+        <li
+          style="
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.015);
+            transition: border-color 0.2s ease;
+          "
+        >
+          <div style="
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: 0.5rem;
+          ">
+            {item.role}
+          </div>
+          <p style="
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            line-height: 1.55;
+          ">
+            {item.desc}
+          </p>
         </li>
       ))}
     </ul>
   </div>
 </section>
-
-<style>
-  .wwa {
-    position: relative;
-    z-index: 2;
-    background: var(--color-bg-warm);
-    min-height: 100vh;
-    padding: 8rem 0 6rem;
-  }
-
-  .wwa__inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-  }
-
-  .wwa__heading {
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    font-weight: 500;
-    color: var(--color-text-primary);
-    margin-bottom: 1.5rem;
-    letter-spacing: -0.01em;
-  }
-
-  .wwa__body {
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--color-text-secondary);
-    max-width: 640px;
-    margin-bottom: 4rem;
-  }
-
-  /* Identity cards grid */
-  .wwa__grid {
-    list-style: none;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-  @media (min-width: 640px)  { .wwa__grid { grid-template-columns: 1fr 1fr; } }
-  @media (min-width: 1024px) { .wwa__grid { grid-template-columns: repeat(4, 1fr); } }
-
-  .wwa__card {
-    padding: 2rem 1.5rem 2rem 0;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .wwa__card-title {
-    font-size: 1.25rem;
-    font-weight: 500;
-    color: var(--color-text-primary);
-    margin-bottom: 0.625rem;
-  }
-
-  .wwa__card-desc {
-    font-size: 0.9375rem;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
-  }
-</style>

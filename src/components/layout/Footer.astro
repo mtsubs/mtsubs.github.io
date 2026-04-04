@@ -1,0 +1,64 @@
+---
+// Footer.astro
+const { t, lang } = Astro.props;
+const isChinese = lang === 'zh-hans';
+---
+
+<footer style="background-color: var(--color-bg-footer); border-top: 1px solid var(--color-border); padding: 4rem 1.5rem 2rem; position: relative; z-index: 2;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <!-- Top row -->
+    <div style="display: flex; flex-wrap: wrap; gap: 3rem; margin-bottom: 3rem;">
+      <!-- Brand -->
+      <div style="flex: 1 1 200px;">
+        <div style="font-size: 1rem; font-weight: 600; color: var(--color-text-primary); margin-bottom: 0.5rem;">MontageSubs</div>
+        <p style="font-size: 0.875rem; color: var(--color-text-secondary); max-width: 260px; line-height: 1.6;">{t.footer.tagline}</p>
+      </div>
+
+      <!-- Links -->
+      <div style="flex: 1 1 160px;">
+        <div style="font-size: 0.75rem; letter-spacing: 0.08em; color: var(--color-text-secondary); margin-bottom: 1rem; text-transform: uppercase;">
+          {isChinese ? '链接' : 'Links'}
+        </div>
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:0.5rem;">
+          {Object.entries(t.footer.links).map(([key, label]) => (
+            <li>
+              <a href={`/${lang}/${key}/`} style="font-size:0.875rem; color:var(--color-text-secondary); text-decoration:none; transition:color 0.15s ease;"
+                onmouseover="this.style.color='var(--color-text-primary)'"
+                onmouseout="this.style.color='var(--color-text-secondary)'"
+              >{label as string}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Social -->
+      <div style="flex: 1 1 160px;">
+        <div style="font-size: 0.75rem; letter-spacing: 0.08em; color: var(--color-text-secondary); margin-bottom: 1rem; text-transform: uppercase;">
+          {isChinese ? '关注我们' : 'Follow'}
+        </div>
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:0.5rem;">
+          {Object.entries(t.footer.social).map(([key, label]) => (
+            <li>
+              <a href={`https://${key}.com`} style="font-size:0.875rem; color:var(--color-text-secondary); text-decoration:none; transition:color 0.15s ease;"
+                target="_blank" rel="noopener noreferrer"
+                onmouseover="this.style.color='var(--color-accent)'"
+                onmouseout="this.style.color='var(--color-text-secondary)'"
+              >{label as string}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom copyright -->
+    <div style="border-top: 1px solid var(--color-border); padding-top: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+      <p style="font-size: 0.75rem; color: var(--color-text-secondary);">{t.footer.copyright}</p>
+      <div style="display:flex; gap:1rem; align-items:center;">
+        <a href={`/${lang === 'zh-hans' ? 'en' : 'zh-hans'}/`}
+          style="font-size:0.75rem; color:var(--color-text-secondary); text-decoration:none;">
+          {isChinese ? 'English' : '中文'}
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

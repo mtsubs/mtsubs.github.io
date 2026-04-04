@@ -1,72 +1,88 @@
-/* ============================================================
-   Global CSS Variables — MontageSubs Design System
-   ============================================================ */
+/* =============================================
+   global.css — CSS variables, reset, base styles
+   ============================================= */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  /* Colours */
-  --color-bg:           #080808;
-  --color-bg-warm:      #100A00;
-  --color-bg-footer:    #0C0C0C;
-  --color-text-primary: #F5F5F5;
-  --color-text-secondary: #A0A0A0;
-  --color-accent:       #E8B84B;
-  --color-border:       #2A2A2A;
-  --color-border-lit:   #5A4A20;
+  /* Color system */
+  --color-bg:            #080808;
+  --color-bg-warm:       #100A00;
+  --color-bg-footer:     #0C0C0C;
+  --color-text-primary:  #F5F5F5;
+  --color-text-secondary:#A0A0A0;
+  --color-accent:        #E8B84B;
+  --color-border:        #2A2A2A;
+  --color-border-lit:    #5A4A20;
 
   /* Typography */
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-               "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB",
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont,
+               "Segoe UI", "Helvetica Neue", Arial,
+               "PingFang SC", "Hiragino Sans GB",
                "Microsoft YaHei", sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", monospace;
-
-  /* Beam initial state (overridden by scroll JS / scroll-driven animation) */
-  --beam-h:       4px;
-  --beam-blur:    2px;
-  --beam-opacity: 0.85;
-  --beam-hue:     45;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code",
+               "Consolas", monospace;
 }
 
-/* Light mode */
+/* Light mode overrides */
 @media (prefers-color-scheme: light) {
   :root {
-    --color-bg:           #FAF8F3;
-    --color-bg-warm:      #F5EFE0;
-    --color-bg-footer:    #EDE3CC;
-    --color-text-primary: #1A1A1A;
-    --color-text-secondary: #606060;
-    --color-border:       #D8D0C0;
-    --color-border-lit:   #C8A84B;
-    --beam-opacity:       0.35;
+    --color-bg:            #FAF8F3;
+    --color-bg-warm:       #F2EDE0;
+    --color-bg-footer:     #E8E2D0;
+    --color-text-primary:  #1A1A1A;
+    --color-text-secondary:#5A5A5A;
+    --color-border:        #D0C8B0;
+    --color-border-lit:    #B8960A;
   }
 }
 
-/* Reduced motion: freeze all animations */
+/* Reduced motion — disable all animations */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .beam { display: none !important; }
 }
 
-/* Reset */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Base reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 html {
   font-family: var(--font-sans);
-  background-color: var(--color-bg);
-  color: var(--color-text-primary);
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-body { min-height: 100vh; }
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
 
-/* Focus styles — never remove */
+/* Focus styles — always visible */
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
   border-radius: 2px;
+}
+
+/* Selection */
+::selection {
+  background: var(--color-accent);
+  color: #080808;
+}
+
+/* Smooth section transitions */
+section {
+  position: relative;
 }
